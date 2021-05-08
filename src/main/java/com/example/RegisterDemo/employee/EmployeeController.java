@@ -2,6 +2,10 @@ package com.example.RegisterDemo.employee;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+=======
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +25,7 @@ public class EmployeeController {
     @PostMapping
     public void addEmployee(@RequestBody Employee employee) {
         employeeService.addEmployee(employee);
+        return employeeService.getAllEmployees();
     }
 
     //        Hard coded data
@@ -29,6 +34,4 @@ public class EmployeeController {
     //                new Employee(2L, "Elon", "eMusk@tesla.com" , Gender.MALE)
     //        );
     //        return employees;
-
-
 }

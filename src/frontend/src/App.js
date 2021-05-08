@@ -131,6 +131,14 @@ function App() {
                 scroll={{ y: 500 }}
             />;
         </>
+        return <Table
+            dataSource={employees}
+            columns={columns}
+            bordered
+            title={() => 'Employees'}
+            pagination={{ pageSize: 50 }}
+            scroll={{ y: 500 }}
+        />;
     }
 
     return <Layout style={{minHeight: '100vh'}}>
