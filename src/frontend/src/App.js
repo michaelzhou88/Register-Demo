@@ -93,7 +93,7 @@ function App() {
             })
 
     useEffect(() => {
-        console.log("component is mounted");
+        console.log("Component is mounted");
         fetchEmployees();
     }, []);
 
