@@ -15,4 +15,9 @@ public class EmployeeService {
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
     }
+
+    public void addEmployee(Employee employee) {
+        // check if email is taken
+        employeeRepository.save(employee);
+    }
 }

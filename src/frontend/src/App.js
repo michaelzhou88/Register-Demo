@@ -4,7 +4,7 @@ import {
     Layout,
     Menu,
     Breadcrumb,
-    Table, Spin, Empty
+    Table, Spin, Empty, Button, Badge, Tag, Avatar, Popconfirm
 } from 'antd';
 import {
     DesktopOutlined,
@@ -12,15 +12,38 @@ import {
     FileOutlined,
     TeamOutlined,
     UserOutlined,
-    LoadingOutlined
+    LoadingOutlined,
+    PlusOutlined
 } from '@ant-design/icons';
+import EmployeeDrawerForm from "./EmployeeDrawerForm";
 
 import './App.css';
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
 
+const TheAvatar = ({name}) => {
+    let trim = name.trim();
+    if (trim.length === 0) {
+        return <Avatar icon={<UserOutlined/>} />
+    }
+    const split = trim.split(" ");
+    if (split.length === 1) {
+        return <Avatar>{name.charAt(0)}</Avatar>
+    }
+    return <Avatar>
+            {`${name.charAt(0)}${name.charAt(name.length-1)}`}
+            </Avatar>
+}
+
 const columns = [
+    {
+        title: '',
+        dataIndex: 'avatar',
+        key: 'avatar',
+        render: (text, employee) =>
+            <TheAvatar name={employee.name}/>
+    },
     {
         title: 'Id',
         dataIndex: 'id',
@@ -41,6 +64,15 @@ const columns = [
         dataIndex: 'gender',
         key: 'gender',
     },
+    {
+        title: 'Actions',
+        render: () => 
+        <>
+            <Button>Delete</Button>
+            <Button>Edit</Button>
+        </>
+        
+    },
 ];
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -49,6 +81,7 @@ function App() {
     const [employees, setEmployees] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
     const [fetching, setFetching] = useState(true);
+    const [showDrawer, setShowDrawer] = useState(false);
 
     const fetchEmployees = () =>
         getAllEmployees()
@@ -71,14 +104,33 @@ function App() {
         if (employees.length <= 0) {
             return <Empty />;
         }
-        return <Table
-            dataSource={employees}
-            columns={columns}
-            bordered
-            title={() => 'Employees'}
-            pagination={{ pageSize: 50 }}
-            scroll={{ y: 500 }}
-        />;
+        return <>
+             <EmployeeDrawerForm
+                showDrawer={showDrawer}
+                setShowDrawer={setShowDrawer}
+                fetchEmployees={fetchEmployees}
+             />
+            <Table
+                dataSource={employees}
+                columns={columns}
+                bordered
+                title={() =>
+                <>
+                    <Tag>Number of employees</Tag>
+                    <Badge style={{marginLeft: "5px"}} count={employees.length} className="site-badge-count-4"/>
+                    <br />
+                    <br />
+                    <Button
+                         onClick={() => setShowDrawer(!showDrawer)}
+                         type="primary" shape="round" icon={<PlusOutlined />} size="small">
+                         Add New Employee
+                    </Button>
+                </>
+            }
+                pagination={{ pageSize: 50 }}
+                scroll={{ y: 500 }}
+            />;
+        </>
     }
 
     return <Layout style={{minHeight: '100vh'}}>
