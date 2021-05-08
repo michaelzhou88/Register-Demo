@@ -77,7 +77,7 @@ function App() {
             bordered
             title={() => 'Employees'}
             pagination={{ pageSize: 50 }}
-            scroll={{ y: 240 }}
+            scroll={{ y: 500 }}
         />;
     }
 
