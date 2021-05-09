@@ -4,7 +4,7 @@ import {
     Layout,
     Menu,
     Breadcrumb,
-    Table, Spin, Empty, Button, Badge, Tag, Avatar, Popconfirm
+    Table, Spin, Empty, Button, Badge, Tag, Avatar
 } from 'antd';
 import {
     DesktopOutlined,
@@ -129,16 +129,9 @@ function App() {
             }
                 pagination={{ pageSize: 50 }}
                 scroll={{ y: 500 }}
+                rowKey={employee => employee.id}
             />;
         </>
-        return <Table
-            dataSource={employees}
-            columns={columns}
-            bordered
-            title={() => 'Employees'}
-            pagination={{ pageSize: 50 }}
-            scroll={{ y: 500 }}
-        />;
     }
 
     return <Layout style={{minHeight: '100vh'}}>
