@@ -13,8 +13,7 @@ const checkStatus = response => {
 
 export const getAllEmployees = () =>
     fetch("api/v1/employees")
-        .then(checkStatus)
-        .catch(err => alert(err));
+        .then(checkStatus);
 
 export const addNewEmployee = employee => 
     fetch("api/v1/employees", {
@@ -24,4 +23,9 @@ export const addNewEmployee = employee =>
         method: 'POST',
         body: JSON.stringify(employee)
         }
-    );
+    ).then(checkStatus);
+
+export const deleteEmployee = employeeId =>
+    fetch(`api/v1/employees/${employeeId}`, {
+        method: 'DELETE'
+    }).then(checkStatus);

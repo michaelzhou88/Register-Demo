@@ -1,10 +1,10 @@
 import React,{useState, useEffect} from 'react';
-import {getAllEmployees} from "./client";
+import {deleteEmployee, getAllEmployees} from "./client";
 import {
     Layout,
     Menu,
     Breadcrumb,
-    Table, Spin, Empty, Button, Badge, Tag, Avatar, Popconfirm
+    Table, Spin, Empty, Button, Badge, Tag, Avatar, Radio, Popconfirm
 } from 'antd';
 import {
     DesktopOutlined,
@@ -18,6 +18,7 @@ import {
 import EmployeeDrawerForm from "./EmployeeDrawerForm";
 
 import './App.css';
+import {successNotification, errorNotification} from "./Notification";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
@@ -36,7 +37,19 @@ const TheAvatar = ({name}) => {
             </Avatar>
 }
 
-const columns = [
+const removeEmployee = (employeeId, callback) => {
+    deleteEmployee(employeeId).then(() => {
+        successNotification( "Employee deleted", `Employee ID: ${employeeId} was deleted`);
+        callback();
+    }).catch(err => {
+        err.response.json().then(res => {
+            console.log(res);
+            errorNotification("There was an issue", `${res.message} [${res.status}] [${res.error}]`)
+        })
+    });
+}
+
+const columns = fetchEmployees => [
     {
         title: '',
         dataIndex: 'avatar',
@@ -66,13 +79,20 @@ const columns = [
     },
     {
         title: 'Actions',
-        render: () => 
-        <>
-            <Button>Delete</Button>
-            <Button>Edit</Button>
-        </>
-        
-    },
+        key: 'actions',
+        render: (text, employee) =>
+            <Radio.Group>
+                    <Popconfirm
+                        placement='topRight'
+                        title={`Are you sure to delete ${employee.name}`}
+                        onConfirm={() => removeEmployee(employee.id, fetchEmployees)}
+                        okText='Yes'
+                        cancelText='No'>
+                        <Radio.Button value="small">Delete</Radio.Button>
+                    </Popconfirm>
+                    <Radio.Button value="small">Edit</Radio.Button>
+            </Radio.Group>
+    }
 ];
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
@@ -89,8 +109,15 @@ function App() {
             .then(data => {
                 console.log(data);
                 setEmployees(data);
+            }).catch(err => {
+                console.log(err.response)
+                err.response.json().then(res => {
+                    console.log(res)
+                    errorNotification("There was an issue", `${res.message} [${res.status}] [${res.error}]`, "bottomLeft")
+                    });
+            }).finally(() => {
                 setFetching(false);
-            })
+            });
 
     useEffect(() => {
         console.log("Component is mounted");
@@ -102,7 +129,19 @@ function App() {
             return <Spin indicator={antIcon} />
         }
         if (employees.length <= 0) {
-            return <Empty />;
+            return <>
+                <Button
+                     onClick={() => setShowDrawer(!showDrawer)}
+                     type="primary" shape="round" icon={<PlusOutlined />} size="small">
+                     Add New Employee
+                </Button>
+                <EmployeeDrawerForm
+                    showDrawer={showDrawer}
+                    setShowDrawer={setShowDrawer}
+                    fetchEmployees={fetchEmployees}
+                />
+                <Empty />
+            </>
         }
         return <>
              <EmployeeDrawerForm
@@ -112,7 +151,7 @@ function App() {
              />
             <Table
                 dataSource={employees}
-                columns={columns}
+                columns={columns(fetchEmployees)}
                 bordered
                 title={() =>
                 <>
@@ -129,16 +168,9 @@ function App() {
             }
                 pagination={{ pageSize: 50 }}
                 scroll={{ y: 500 }}
+                rowKey={employee => employee.id}
             />;
         </>
-        return <Table
-            dataSource={employees}
-            columns={columns}
-            bordered
-            title={() => 'Employees'}
-            pagination={{ pageSize: 50 }}
-            scroll={{ y: 500 }}
-        />;
     }
 
     return <Layout style={{minHeight: '100vh'}}>
