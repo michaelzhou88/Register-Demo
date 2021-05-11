@@ -2,11 +2,15 @@ package com.example.RegisterDemo.employee;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
+
+//import java.util.Arrays;
 import java.util.List;
 
 @RestController // Marks the class as a controller and returns into JSON object
@@ -31,6 +35,10 @@ public class EmployeeController {
     public void deleteEmployee(
             @PathVariable("employeeId") Long employeeId) {
         employeeService.deleteEmployee(employeeId);
+    }
+
+    public void addStudent(@RequestBody Employee employee) {
+        employeeService.addEmployee(employee);
     }
 
 }
