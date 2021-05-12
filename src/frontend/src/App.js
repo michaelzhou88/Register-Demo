@@ -11,8 +11,7 @@ import {
     Badge,
     Tag,
     Avatar,
-    Radio,
-    Popconfirm
+    Radio, Popconfirm, Image
 } from 'antd';
 import {
     DesktopOutlined,
@@ -217,7 +216,11 @@ function App() {
                     {renderEmployees()}
                 </div>
             </Content>
-            <Footer style={{textAlign: 'center'}}>By Michael Zhou</Footer>
+            <Footer style={{textAlign: 'center'}}>
+                <Image width={75}
+                    src="https://user-images.githubusercontent.com/38016799/117983147-94212600-b32e-11eb-9cf0-6c9b916a7e4a.jpg"
+                />
+            </Footer>
         </Layout>
     </Layout>
 }
