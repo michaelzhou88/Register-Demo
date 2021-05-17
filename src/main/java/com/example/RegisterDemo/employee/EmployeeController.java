@@ -22,7 +22,7 @@ public class EmployeeController {
         try {
             return employeeService.getAllEmployees();
         } catch (Exception e) {
-            throw new ApiRequestException("Oops cannot get all emploees. " + e);
+            throw new ApiRequestException("Oops cannot get all employees. " + e);
         }
     }
 
