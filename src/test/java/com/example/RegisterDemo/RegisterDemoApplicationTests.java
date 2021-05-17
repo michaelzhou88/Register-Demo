@@ -1,11 +1,9 @@
 package com.example.RegisterDemo;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@SpringBootTest
 class RegisterDemoApplicationTests {
 
 	Calculator underTest = new Calculator();
@@ -25,7 +23,7 @@ class RegisterDemoApplicationTests {
 
 	}
 
-	class Calculator {
+	static class Calculator {
 		int add(int a, int b) {
 			return a+b;
 		}
