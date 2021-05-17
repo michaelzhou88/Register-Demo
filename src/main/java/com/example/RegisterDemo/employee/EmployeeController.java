@@ -1,5 +1,6 @@
 package com.example.RegisterDemo.employee;
 
+import com.example.RegisterDemo.employee.exception.ApiRequestException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,11 @@ public class EmployeeController {
 
     @GetMapping // Expose endpoints
     public List<Employee> getAllEmployees() {
-//        throw new IllegalStateException("oops error");
-        return employeeService.getAllEmployees();
+        try {
+            return employeeService.getAllEmployees();
+        } catch (Exception e) {
+            throw new ApiRequestException("Oops cannot get all emploees. " + e);
+        }
     }
 
     @PostMapping
