@@ -1,6 +1,5 @@
 import fetch from 'unfetch';
 
-// Proxy requests to backend 
 const checkStatus = response => {
     if (response.ok) {
         return response;
@@ -11,21 +10,21 @@ const checkStatus = response => {
     return Promise.reject(error);
 }
 
-export const getAllEmployees = () =>
-    fetch("api/v1/employees")
+export const getAllStudents = () =>
+    fetch("api/v1/students")
         .then(checkStatus);
 
-export const addNewEmployee = employee => 
-    fetch("api/v1/employees", {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify(employee)
+export const addNewStudent = student =>
+    fetch("api/v1/students", {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(student)
         }
-    ).then(checkStatus);
+    ).then(checkStatus)
 
-export const deleteEmployee = employeeId =>
-    fetch(`api/v1/employees/${employeeId}`, {
+export const deleteStudent = studentId =>
+    fetch(`api/v1/students/${studentId}`, {
         method: 'DELETE'
     }).then(checkStatus);

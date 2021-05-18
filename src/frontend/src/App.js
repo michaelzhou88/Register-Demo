@@ -1,5 +1,5 @@
-import React,{useState, useEffect} from 'react';
-import {deleteEmployee, getAllEmployees} from "./client";
+import React, {useState, useEffect} from 'react'
+import {deleteStudent, getAllStudents} from "./client";
 import {
     Layout,
     Menu,
@@ -13,6 +13,7 @@ import {
     Avatar,
     Radio, Popconfirm, Image
 } from 'antd';
+
 import {
     DesktopOutlined,
     PieChartOutlined,
@@ -22,10 +23,11 @@ import {
     LoadingOutlined,
     PlusOutlined
 } from '@ant-design/icons';
-import EmployeeDrawerForm from "./EmployeeDrawerForm";
+import StudentDrawerForm from "./StudentDrawerForm";
 
 import './App.css';
-import {successNotification, errorNotification} from "./Notification";
+import {errorNotification, successNotification} from "./Notification";
+
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
@@ -33,36 +35,39 @@ const {SubMenu} = Menu;
 const TheAvatar = ({name}) => {
     let trim = name.trim();
     if (trim.length === 0) {
-        return <Avatar icon={<UserOutlined/>} />
+        return <Avatar icon={<UserOutlined/>}/>
     }
     const split = trim.split(" ");
     if (split.length === 1) {
         return <Avatar>{name.charAt(0)}</Avatar>
     }
     return <Avatar>
-            {`${name.charAt(0)}${name.charAt(name.length-1)}`}
-            </Avatar>
+        {`${name.charAt(0)}${name.charAt(name.length - 1)}`}
+    </Avatar>
 }
 
-const removeEmployee = (employeeId, callback) => {
-    deleteEmployee(employeeId).then(() => {
-        successNotification( "Employee deleted", `Employee ID: ${employeeId} was deleted`);
+const removeStudent = (studentId, callback) => {
+    deleteStudent(studentId).then(() => {
+        successNotification("Student deleted", `Student with ${studentId} was deleted`);
         callback();
     }).catch(err => {
         err.response.json().then(res => {
             console.log(res);
-            errorNotification("There was an issue", `${res.message} [${res.status}] [${res.error}]`)
-        })
-    });
+            errorNotification(
+                "There was an issue",
+                `${res.message} [${res.status}] [${res.error}]`
+            )
+        });
+    })
 }
 
-const columns = fetchEmployees => [
+const columns = fetchStudents => [
     {
         title: '',
         dataIndex: 'avatar',
         key: 'avatar',
-        render: (text, employee) =>
-            <TheAvatar name={employee.name}/>
+        render: (text, student) =>
+            <TheAvatar name={student.name}/>
     },
     {
         title: 'Id',
@@ -87,96 +92,96 @@ const columns = fetchEmployees => [
     {
         title: 'Actions',
         key: 'actions',
-        render: (text, employee) =>
+        render: (text, student) =>
             <Radio.Group>
-                    <Popconfirm
-                        placement='topRight'
-                        title={`Are you sure to delete ${employee.name}`}
-                        onConfirm={() => removeEmployee(employee.id, fetchEmployees)}
-                        okText='Yes'
-                        cancelText='No'>
-                        <Radio.Button value="small">Delete</Radio.Button>
-                    </Popconfirm>
-                    <Radio.Button value="small">Edit</Radio.Button>
+                <Popconfirm
+                    placement='topRight'
+                    title={`Are you sure to delete ${student.name}`}
+                    onConfirm={() => removeStudent(student.id, fetchStudents)}
+                    okText='Yes'
+                    cancelText='No'>
+                    <Radio.Button value="small">Delete</Radio.Button>
+                </Popconfirm>
+                <Radio.Button onClick={() => alert("TODO: Implement edit student")} value="small">Edit</Radio.Button>
             </Radio.Group>
     }
 ];
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+const antIcon = <LoadingOutlined style={{fontSize: 24}} spin/>;
 
 function App() {
-    const [employees, setEmployees] = useState([]);
+    const [students, setStudents] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [showDrawer, setShowDrawer] = useState(false);
 
-    const fetchEmployees = () =>
-        getAllEmployees()
+    const fetchStudents = () =>
+        getAllStudents()
             .then(res => res.json())
             .then(data => {
                 console.log(data);
-                setEmployees(data);
+                setStudents(data);
             }).catch(err => {
                 console.log(err.response)
                 err.response.json().then(res => {
-                    console.log(res)
-                    errorNotification("There was an issue", `${res.message} [${res.status}] [${res.error}]`, "bottomLeft")
-                    });
-            }).finally(() => {
-                setFetching(false);
-            });
+                    console.log(res);
+                    errorNotification(
+                        "There was an issue",
+                        `${res.message} [${res.status}] [${res.error}]`
+                    )
+                });
+            }).finally(() => setFetching(false))
 
     useEffect(() => {
-        console.log("Component is mounted");
-        fetchEmployees();
+        console.log("component is mounted");
+        fetchStudents();
     }, []);
 
-    const renderEmployees = () => {
+    const renderStudents = () => {
         if (fetching) {
-            return <Spin indicator={antIcon} />
+            return <Spin indicator={antIcon}/>
         }
-        if (employees.length <= 0) {
+        if (students.length <= 0) {
             return <>
                 <Button
-                     onClick={() => setShowDrawer(!showDrawer)}
-                     type="primary" shape="round" icon={<PlusOutlined />} size="small">
-                     Add New Employee
+                    onClick={() => setShowDrawer(!showDrawer)}
+                    type="primary" shape="round" icon={<PlusOutlined/>} size="small">
+                    Add New Student
                 </Button>
-                <EmployeeDrawerForm
+                <StudentDrawerForm
                     showDrawer={showDrawer}
                     setShowDrawer={setShowDrawer}
-                    fetchEmployees={fetchEmployees}
+                    fetchStudents={fetchStudents}
                 />
-                <Empty />
+                <Empty/>
             </>
         }
         return <>
-             <EmployeeDrawerForm
+            <StudentDrawerForm
                 showDrawer={showDrawer}
                 setShowDrawer={setShowDrawer}
-                fetchEmployees={fetchEmployees}
-             />
+                fetchStudents={fetchStudents}
+            />
             <Table
-                dataSource={employees}
-                columns={columns(fetchEmployees)}
+                dataSource={students}
+                columns={columns(fetchStudents)}
                 bordered
                 title={() =>
-                <>
-                    <Tag>Number of employees</Tag>
-                    <Badge style={{marginLeft: "5px"}} count={employees.length} className="site-badge-count-4"/>
-                    <br />
-                    <br />
-                    <Button
-                         onClick={() => setShowDrawer(!showDrawer)}
-                         type="primary" shape="round" icon={<PlusOutlined />} size="small">
-                         Add New Employee
-                    </Button>
-                </>
-            }
-                pagination={{ pageSize: 50 }}
-                scroll={{ y: 500 }}
-                rowKey={employee => employee.id}
-            />;
+                    <>
+                        <Tag>Number of students</Tag>
+                        <Badge count={students.length} className="site-badge-count-4"/>
+                        <br/><br/>
+                        <Button
+                            onClick={() => setShowDrawer(!showDrawer)}
+                            type="primary" shape="round" icon={<PlusOutlined/>} size="small">
+                            Add New Student
+                        </Button>
+                    </>
+                }
+                pagination={{pageSize: 50}}
+                scroll={{y: 500}}
+                rowKey={student => student.id}
+            />
         </>
     }
 
@@ -213,7 +218,7 @@ function App() {
                     <Breadcrumb.Item>Bill</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="site-layout-background" style={{padding: 24, minHeight: 360}}>
-                    {renderEmployees()}
+                    {renderStudents()}
                 </div>
             </Content>
             <Footer style={{textAlign: 'center'}}>

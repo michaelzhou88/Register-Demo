@@ -1,7 +1,6 @@
 package com.example.RegisterDemo.employee;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -9,10 +8,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest    // For unit testing repositories
-class EmployeeRepositoryTest {
+class StudentRepositoryTest {
 
     @Autowired
-    private EmployeeRepository underTest;
+    private StudentRepository underTest;
 
     @AfterEach
     void tearDown() {
@@ -23,7 +22,7 @@ class EmployeeRepositoryTest {
     void itShouldCheckWhenEmployeeEmailExists() {
         //given
         String email = "david@gmail.com";
-        Employee employee = new Employee("David", email, Gender.MALE);
+        Student employee = new Student("David", email, Gender.MALE);
         underTest.save(employee);
 
         //when

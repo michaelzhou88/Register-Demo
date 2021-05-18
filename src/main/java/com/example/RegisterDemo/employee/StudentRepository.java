@@ -5,13 +5,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EmployeeRepository
-        extends JpaRepository<Employee, Long> {
+public interface StudentRepository
+        extends JpaRepository<Student, Long> {
     @Query("" +
-            "SELECT CASE WHEN COUNT(e) > 0 THEN " +
+            "SELECT CASE WHEN COUNT(s) > 0 THEN " +
             "TRUE ELSE FALSE END " +
-            "FROM Employee e " +
-            "WHERE e.email = ?1"
+            "FROM Student s " +
+            "WHERE s.email = ?1"
     )
     Boolean selectExistsEmail(String email);
 }

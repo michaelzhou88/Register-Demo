@@ -17,15 +17,15 @@ import javax.validation.constraints.NotNull;
 @Entity
 // Alternatively could have just used @Data to represent all the annotations above but that would make the strings below immutable
 @Table
-public class Employee {
+public class Student {
     @Id
     @SequenceGenerator(
-            name = "employee_sequence",
-            sequenceName = "employee_sequence",
+            name = "student_sequence",
+            sequenceName = "student_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
-            generator = "employee_sequence",
+            generator = "student_sequence",
             strategy = GenerationType.SEQUENCE)
     private Long id;
     @NotBlank
@@ -39,7 +39,7 @@ public class Employee {
     @Column(nullable = false)
     private Gender gender;
 
-    public Employee(String name, String email, Gender gender) {
+    public Student(String name, String email, Gender gender) {
         this.name = name;
         this.email = email;
         this.gender = gender;

@@ -1,7 +1,7 @@
 package com.example.RegisterDemo.integration;
 
-import com.example.RegisterDemo.employee.Employee;
-import com.example.RegisterDemo.employee.EmployeeRepository;
+import com.example.RegisterDemo.employee.Student;
+import com.example.RegisterDemo.employee.StudentRepository;
 import com.example.RegisterDemo.employee.Gender;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         locations = "classpath:application-it.properties"
 )
 @AutoConfigureMockMvc
-public class EmployeeIT {
+public class StudentIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,30 +39,30 @@ public class EmployeeIT {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private StudentRepository studentRepository;
 
     private final Faker faker = new Faker();
 
     @Test
-    void canRegisterNewEmployee() throws Exception {
+    void canRegisterNewStudent() throws Exception {
         //given
         String name = String.format("%s %s",
                 faker.name().firstName(),
                 faker.name().lastName());
         String email = faker.internet().emailAddress();
-        Employee employee = new Employee(
+        Student student = new Student(
                 name,
                 email, Gender.FEMALE);
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/employees").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(employee)));
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/students").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(student)));
         //then
         resultActions.andExpect(status().isOk());
-        List<Employee> employees = employeeRepository.findAll();
-        assertThat(employees).usingElementComparatorIgnoringFields("id").contains(employee);
+        List<Student> students = studentRepository.findAll();
+        assertThat(students).usingElementComparatorIgnoringFields("id").contains(student);
     }
 
     @Test
-    void canDeleteEmployee() throws Exception {
+    void canDeleteStudent() throws Exception {
         //given
         String name = String.format(
                 "%s %s",
@@ -72,44 +72,44 @@ public class EmployeeIT {
 
         String email = String.format("%s@gmail.com",
                 StringUtils.trimAllWhitespace(name.trim().toLowerCase()));
-        Employee employee = new Employee(
+        Student student = new Student(
                 name,
                 email,
                 Gender.MALE);
-        mockMvc.perform(post("/api/v1/employees").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(employee))).andExpect(status().isOk());
+        mockMvc.perform(post("/api/v1/students").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(student))).andExpect(status().isOk());
 
         // perform GET request to API
-        MvcResult getEmployeesResult = mockMvc.perform(get("/api/v1/employees")
+        MvcResult getStudentsResult = mockMvc.perform(get("/api/v1/students")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
         // Grab the response as a string
-        String contentAsString = getEmployeesResult
+        String contentAsString = getStudentsResult
                 .getResponse()
                 .getContentAsString();
 
         // Map the string into a list of objects
-        List<Employee> employees = objectMapper.readValue(
+        List<Student> students = objectMapper.readValue(
                 contentAsString,
                 new TypeReference<>() {
                 }
         );
 
-        long id = employees.stream()
-                .filter(e -> e.getEmail().equals(employee.getEmail()))
-                .map(Employee::getId)
+        long id = students.stream()
+                .filter(s -> s.getEmail().equals(student.getEmail()))
+                .map(Student::getId)
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalStateException(
-                                "Employee with email:" + email + " not found"));
+                                "Student with email:" + email + " not found"));
 
         //when
         ResultActions resultActions = mockMvc
-                .perform(delete("/api/v1/employees/" + id));
+                .perform(delete("/api/v1/students/" + id));
         //then
         resultActions.andExpect(status().isOk());
-        boolean exists = employeeRepository.existsById(id);
+        boolean exists = studentRepository.existsById(id);
         assertThat(exists).isFalse();
     }
 }
