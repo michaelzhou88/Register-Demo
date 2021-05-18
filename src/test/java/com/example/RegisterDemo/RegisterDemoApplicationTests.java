@@ -1,10 +1,18 @@
 package com.example.RegisterDemo;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest
 class RegisterDemoApplicationTests {
+
+	@Test
+	void contextLoads() {
+		Assertions.fail("Ooops test failed");
+	}
 
 	Calculator underTest = new Calculator();
 
